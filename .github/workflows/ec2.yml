@@ -31,6 +31,14 @@ jobs:
           cd EC2
           terraform init
 
+      - name: Verify Public Key Exists
+        run: |
+          if [ -z "${{ secrets.AWS_PUBLIC_KEY }}" ]; then
+            echo "ERROR: AWS_PUBLIC_KEY secret is missing!"
+            exit 1
+          fi
+        shell: bash
+
       - name: Apply Terraform
         env:
           AWS_PUBLIC_KEY: ${{ secrets.AWS_PUBLIC_KEY }}

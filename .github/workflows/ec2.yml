@@ -1,52 +1,55 @@
 name: Deploy Infrastructure
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+# on:
+#   push:
+#     branches:
+#       - main  # Trigger deployment on push to the main branch
+#   workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Fetches the latest code from the repository
 
       - name: Set Up Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v1  # Installs Terraform
         with:
-          terraform_version: 1.5.0
+          terraform_version: 1.5.0  # Specifies the Terraform version to use
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1  # Configures AWS authentication
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} 
+          aws-region: us-east-1  
 
       - name: Initialize Terraform
         run: |
-          cd EC2
-          terraform init
+          cd EC2                    
+          terraform init            # Initialize Terraform (downloads providers and sets up backend)
 
       - name: Verify Public Key Exists
         run: |
+          # Ensure the AWS public key is available as a secret
           if [ -z "${{ secrets.AWS_PUBLIC_KEY }}" ]; then
             echo "ERROR: AWS_PUBLIC_KEY secret is missing!"
-            exit 1
+            exit 1                      # Stop execution if the key is missing
           fi
         shell: bash
 
       - name: Apply Terraform
         env:
-          AWS_PUBLIC_KEY: ${{ secrets.AWS_PUBLIC_KEY }}
+          AWS_PUBLIC_KEY: ${{ secrets.AWS_PUBLIC_KEY }}  # Pass the AWS public key as an environment variable
         run: |
-          cd EC2
+          cd EC2  
+          # Apply Terraform configuration with auto-approval and pass the public key as a variable
           terraform apply -auto-approve -var="deployer_public_key=$AWS_PUBLIC_KEY"
 
       - name: Fetch EC2 Public IP
         run: |
-          cd EC2
+          cd EC2  
+          # Retrieve and display the public IP of the deployed Nginx server
           echo "Nginx Server Public IP: $(terraform output nginx_server_ip)"

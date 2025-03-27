@@ -4,9 +4,7 @@ provider "aws" {
 
 resource "aws_key_pair" "deployer" {
   key_name   = "deployer-key"
-  public_key = file("${path.module}/deployer_key.pub")
-
-
+  public_key = var.deployer_public_key
 }
 
 resource "aws_security_group" "nginx_sg" {
@@ -35,9 +33,9 @@ resource "aws_security_group" "nginx_sg" {
 }
 
 resource "aws_instance" "nginx_server" {
-  ami           = var.ami_id
-  instance_type = var.instance_type
-  key_name      = aws_key_pair.deployer.key_name
+  ami             = var.ami_id
+  instance_type   = var.instance_type
+  key_name        = aws_key_pair.deployer.key_name
   security_groups = [aws_security_group.nginx_sg.name]
 
   user_data = <<-EOF

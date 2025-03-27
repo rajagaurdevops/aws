@@ -10,7 +10,7 @@ variable "instance_type" {
   default = "t3.micro"
 }
 
-variable "ssh_key" {
-  description = "Path to SSH public key"
-  default     = "/home/ubuntu/.ssh/deployer_key.pub"
+variable "deployer_public_key" {
+  description = "SSH Public Key Content"
+  type        = string
 }

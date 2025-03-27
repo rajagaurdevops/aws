@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/ec2.yml'  # Sirf jab ec2.yml file change ho tabhi workflow chale
   workflow_dispatch:  # Manually trigger workflow
 
 jobs:
@@ -27,6 +29,6 @@ jobs:
             --image-id ami-007f35e81392786a4 \
             --instance-type t3.micro \
             --key-name hp \
-            --security-groups default \
+            --security-group-ids ${{ secrets.AWS_SECURITY_GROUP_ID }} \
             --count 1 \
             --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=Github-Action-Instance}]'

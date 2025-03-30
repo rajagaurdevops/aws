@@ -6,6 +6,7 @@ on:
       - main 
     paths:
       - 'jenkins-project/**'  # Trigger when files in the jenkins-project directory change
+      - '.github/workflows/jenkins.yml'
   workflow_dispatch:  
 
 jobs:

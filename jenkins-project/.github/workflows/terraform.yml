@@ -5,7 +5,7 @@ on:
     branches:
       - main 
     paths:
-      - '.github/workflows/terraform.yml'  # Trigger only when files in jenkins-project directory change
+      - 'jenkins-project/**'  # Trigger when files in the jenkins-project directory change
 
 jobs:
   terraform:

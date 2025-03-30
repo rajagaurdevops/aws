@@ -1,0 +1,43 @@
+name: Terraform AWS Infrastructure
+
+on:
+  push:
+    branches:
+      - main  # Change to your default branch name
+    paths:
+      - 'jenkins-project/**'  # Trigger only when files in jenkins-project directory change
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: us-east-1  # You can modify this to your preferred AWS region
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: '1.4.6'  # Use the appropriate Terraform version
+
+    - name: Initialize Terraform
+      run: |
+        cd jenkins-project
+        terraform init
+
+    - name: Validate Terraform
+      run: |
+        cd jenkins-project
+        terraform validate
+
+    - name: Apply Terraform Changes
+      run: |
+        cd jenkins-project
+        terraform apply -auto-approve

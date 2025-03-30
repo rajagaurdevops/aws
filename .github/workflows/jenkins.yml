@@ -6,6 +6,7 @@ on:
       - main 
     paths:
       - 'jenkins-project/**'  # Trigger when files in the jenkins-project directory change
+  workflow_dispatch:  
 
 jobs:
   terraform:
@@ -18,9 +19,9 @@ jobs:
     - name: Set up AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: us-east-1  # You can modify this to your preferred AWS region
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1  # Modify to your AWS region
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1

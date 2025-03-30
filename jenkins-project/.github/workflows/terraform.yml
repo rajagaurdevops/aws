@@ -3,7 +3,7 @@ name: Terraform AWS Infrastructure
 on:
   push:
     branches:
-      - main  # Change to your default branch name
+      - main 
     paths:
       - 'jenkins-project/**'  # Trigger only when files in jenkins-project directory change
 

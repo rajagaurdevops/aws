@@ -29,7 +29,7 @@ systemctl enable jenkins
 systemctl restart jenkins  
 
 # Nginx ke reverse proxy configuration karein
-cat <<EOF > /etc/nginx/sites-available/default
+cat <<EOF > /etc/nginx/conf.d/jenkins-reverse-proxy.conf
 server {
     listen 80;
     server_name localhost;
@@ -45,6 +45,5 @@ server {
 EOF
 
 # Nginx configuration enable karein aur restart karein
-ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 nginx -t  
 systemctl restart nginx

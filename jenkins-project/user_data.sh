@@ -5,24 +5,28 @@ set -ex  # Debugging enable karein aur error pe script stop ho jaye
 apt update -y && apt upgrade -y
 
 # Required packages install karein
-apt install -y curl nginx openjdk-17-jdk
+apt install -y curl openjdk-17-jdk
 
-# Nginx enable aur restart karein
-systemctl enable nginx  
-systemctl restart nginx  
+# Nginx ke latest version ke liye repository add karein
+curl -fsSL https://nginx.org/keys/nginx_signing.key | gpg --dearmor -o /usr/share/keyrings/nginx-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/ubuntu `lsb_release -cs` nginx" | tee /etc/apt/sources.list.d/nginx.list
 
 # Jenkins ke liye repo aur key add karein
 mkdir -p /usr/share/keyrings  
-curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | tee \
+curl -fsSL https://pkg.jenkins.io/debian/jenkins.io.key | tee \
   /usr/share/keyrings/jenkins-keyring.asc > /dev/null  
 
 echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
   https://pkg.jenkins.io/debian binary/" | tee \
   /etc/apt/sources.list.d/jenkins.list > /dev/null  
 
-# Update aur Jenkins install karein
+# Update aur latest Nginx aur Jenkins install karein
 apt update -y
-apt install -y jenkins
+apt install -y nginx jenkins
+
+# Nginx enable aur restart karein
+systemctl enable nginx  
+systemctl restart nginx  
 
 # Jenkins service enable aur restart karein
 systemctl daemon-reload  

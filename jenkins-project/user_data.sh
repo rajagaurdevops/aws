@@ -28,11 +28,14 @@ systemctl daemon-reload
 systemctl enable jenkins  
 systemctl restart jenkins  
 
+# Pehle se existing default config remove karein
+rm -f /etc/nginx/conf.d/default.conf
+
 # Nginx ke reverse proxy configuration karein
-cat <<EOF > /etc/nginx/conf.d/default.conf
+cat <<EOF > /etc/nginx/conf.d/jenkins.conf
 server {
     listen 80;
-    server_name localhost;
+    server_name _;
 
     location / {
         proxy_pass http://localhost:8080;
@@ -40,11 +43,23 @@ server {
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
+
+        # WebSocket aur timeouts optimize karein
+        proxy_connect_timeout 90;
+        proxy_send_timeout 90;
+        proxy_read_timeout 90;
+        send_timeout 90;
+
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "Upgrade";
     }
 }
 EOF
 
-
-# Nginx configuration enable karein aur restart karein
+# Nginx configuration test karein
 nginx -t  
-systemctl restart nginx
+
+# Nginx restart karein aur status check karein
+systemctl restart nginx  
+systemctl status nginx --no-pager
+

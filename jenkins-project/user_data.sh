@@ -34,27 +34,31 @@ rm -f /etc/nginx/conf.d/default.conf
 # Nginx ke reverse proxy configuration karein
 cat <<EOF > /etc/nginx/conf.d/jenkins.conf
 server {
-    listen 80;
-    server_name _;
+    listen 80;  # Nginx ko port 80 par listen karne ke liye configure karein
+    server_name _;  # Default server block ke liye wildcard (_) use kiya gaya hai
 
     location / {
-        proxy_pass http://localhost:8080;
+        proxy_pass http://localhost:8080;  # Jenkins ka traffic localhost:8080 par forward karein
+        
+        # Client ka original host header preserve karein
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
 
-        # WebSocket aur timeouts optimize karein
-        proxy_connect_timeout 90;
-        proxy_send_timeout 90;
-        proxy_read_timeout 90;
-        send_timeout 90;
+        # # WebSocket aur timeouts optimize karein
+        # proxy_connect_timeout 90;                  # 90 seconds tak backend server se connect hone ka wait karein
+        # proxy_send_timeout 90;                     # 90 seconds tak backend ko request bhejne ka wait karein
+        # proxy_read_timeout 90;                    # 90 seconds tak backend se response read karne ka wait karein
+        # send_timeout 90;                          # 90 seconds tak client ko response bhejne ka wait karein
 
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection "Upgrade";
+        # # WebSocket support enable karein (Jenkins UI aur live logs ke liye zaroori)
+        # proxy_set_header Upgrade \$http_upgrade;
+        # proxy_set_header Connection "Upgrade";
     }
 }
 EOF
+
 
 # Nginx configuration test karein
 nginx -t  

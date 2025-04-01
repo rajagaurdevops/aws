@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/ec2.yml'  # Sirf jab ec2.yml file change ho tabhi workflow chale
+      - '.github/workflows/deploy-instance.yml'  # Sirf jab ec2.yml file change ho tabhi workflow chale
   workflow_dispatch:  # Manually trigger workflow
 
 jobs:

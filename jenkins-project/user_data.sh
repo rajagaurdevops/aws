@@ -45,16 +45,7 @@ server {
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
-
-        # # WebSocket aur timeouts optimize karein
-        # proxy_connect_timeout 90;                  # 90 seconds tak backend server se connect hone ka wait karein
-        # proxy_send_timeout 90;                     # 90 seconds tak backend ko request bhejne ka wait karein
-        # proxy_read_timeout 90;                    # 90 seconds tak backend se response read karne ka wait karein
-        # send_timeout 90;                          # 90 seconds tak client ko response bhejne ka wait karein
-
-        # # WebSocket support enable karein (Jenkins UI aur live logs ke liye zaroori)
-        # proxy_set_header Upgrade \$http_upgrade;
-        # proxy_set_header Connection "Upgrade";
+  
     }
 }
 EOF

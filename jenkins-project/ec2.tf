@@ -7,6 +7,6 @@ resource "aws_instance" "web" {
   user_data = file("user_data.sh")
 
   tags = {
-    Name = "terraform-jenkins-proxy"
+    Name = "terraform"
   }
 }
